@@ -49,7 +49,7 @@
     <v-app-bar :clipped-left="$vuetify.breakpoint.lgAndUp" app color="blue darken-3" dark>
       <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
       <v-toolbar-title style="width: 300px" class="ml-0 pl-4">
-        <span class="hidden-sm-and-down">Google Contacts</span>
+        <span class="hidden-sm-and-down">School Admin</span>
       </v-toolbar-title>
       <v-text-field
         flat

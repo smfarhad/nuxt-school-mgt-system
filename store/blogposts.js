@@ -1,5 +1,5 @@
 import Vuex from 'vuex';
-import axios from 'axios';
+import Axios from 'axios';
 const createStore = () => {
   return new Vuex.Store({
     state: {
@@ -12,18 +12,19 @@ const createStore = () => {
     },
     actions: {
       nuxtServerInit(vuexContext, context) {
-        return axios.get('https://nuxtjs-schoolmgtsystem.firebaseio.com/blog-posts.json')
+
+        axiox.get('https://nuxtjs-schoolmgtsystem.firebaseio.com/blog-posts.json')
           .then(res => {
-            const postsArray = [];
+            const postsArray = []
             for (const key in res.data) {
               postsArray.push({
                 ...res.data[key],
                 id: key
-              });
+              })
             }
-            vuexContext.commit('setPosts', postsArray);
+            vuexContext.commit('setPosts', postsArray)
           })
-          .catch(e => context.error(e));
+          .catch()
       },
       setPosts(vuexContext, posts) {
         vuexContext.commit('setPosts', posts);

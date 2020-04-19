@@ -17,20 +17,14 @@
               <v-card-text>
                 <v-container>
                   <v-row>
-                    <v-col>
+                    <v-col cols="12" md="12" sm="12">
                       <v-text-field v-model="editedItem.name" label="Post Title"></v-text-field>
+                    </v-col>
+                    <v-col cols="12" md="12" sm="12">
+                      <v-text-field v-model="editedItem.thumb" label="Image link"></v-text-field>
                     </v-col>
                     <v-col cols="12" sm="12" md="12">
                       <v-text-field v-model="editedItem.description" label="Description"></v-text-field>
-                    </v-col>
-                    <v-col cols="12" sm="12" md="12">
-                      <v-text-field v-model="editedItem.fat" label="Fat (g)"></v-text-field>
-                    </v-col>
-                    <v-col cols="12" sm="12" md="12">
-                      <v-text-field v-model="editedItem.carbs" label="Carbs (g)"></v-text-field>
-                    </v-col>
-                    <v-col cols="12" sm="12" md="12">
-                      <v-text-field v-model="editedItem.protein" label="Protein (g)"></v-text-field>
                     </v-col>
                   </v-row>
                 </v-container>
@@ -62,6 +56,7 @@
   </div>
 </template>
 <script>
+import axios from "axios";
 export default {
   props: {
     isAdmin: {
@@ -71,7 +66,6 @@ export default {
   },
   created() {
     this.$store.dispatch("setPosts", this.loadedPosts);
-    //  console.log("Vuex Tests:" + this.$store.getters.loadedPosts);
   },
   data() {
     return {
@@ -99,7 +93,6 @@ export default {
       }
     };
   },
-
   computed: {
     loadedPosts() {
       return this.$store.getters.loadedPosts;
@@ -108,7 +101,6 @@ export default {
       return this.editedIndex === -1 ? "New Item" : "Edit Item";
     }
   },
-
   watch: {
     dialog(val) {
       val || this.close();
@@ -156,9 +148,16 @@ export default {
 
     save() {
       if (this.editedIndex > -1) {
-        Object.assign(this.desserts[this.editedIndex], this.editedItem);
+        //Object.assign(this.desserts[this.editedIndex], this.editedItem);
       } else {
-        this.desserts.push(this.editedItem);
+        axios
+          .post(
+            "https://nuxtjs-schoolmgtsystem.firebaseio.com/blog-posts.json",
+            this.editedItem
+          )
+          .then(result => console.log(result))
+          .catch(e => console.log(e));
+        //this.desserts.push(this.editedItem);
       }
       this.close();
     }
