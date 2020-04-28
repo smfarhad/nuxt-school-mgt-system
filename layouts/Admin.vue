@@ -60,9 +60,13 @@
         class="hidden-sm-and-down"
       />
       <v-spacer />
-      <v-btn icon>
-        <v-icon>mdi-apps</v-icon>
-      </v-btn>
+      <span class="logout" @click="signOut()">Logout</span>
+      <n-link to="/">
+        <v-btn icon>
+          <v-icon>mdi-home</v-icon>
+        </v-btn>
+      </n-link>
+
       <v-btn icon>
         <v-icon>mdi-bell</v-icon>
       </v-btn>
@@ -126,62 +130,115 @@
 </template>
 
 <script>
+import * as firebase from "firebase/app";
+import "firebase/auth";
+
 export default {
+  middleware: "log",
   props: {
     source: String
   },
-  data: () => ({
-    dialog: false,
-    drawer: null,
-    items: [
-      { icon: "mdi-home", text: "Dashboard", to: "/" },
-      { icon: "mdi-forum", text: "Blog Post", to: "/blog" },
-      { icon: "mdi-history", text: "Frequently contacted", to: "/" },
-      { icon: "mdi-content-copy", text: "Duplicates", to: "/" },
-      {
-        icon: "mdi-chevron-up",
-        "icon-alt": "mdi-chevron-down",
-        text: "Labels",
-        to: "",
-        model: true,
-        children: [{ icon: "mdi-plus", text: "Create label" }]
-      },
-      {
-        icon: "mdi-chevron-up",
-        "icon-alt": "mdi-chevron-down",
-        text: "More",
-        model: false,
-        children: [
-          { text: "Import", to: "" },
-          { text: "Export", to: "" },
-          { text: "Print", to: "" },
-          { text: "Undo changes", to: "" },
-          { text: "Other contacts", to: "" }
-        ]
-      },
-      {
-        icon: "mdi-settings",
-        "icon-alt": "mdi-settings",
-        text: "Settings",
-        children: [
-          { text: "Import", to: "" },
-          { text: "Export", to: "" },
-          { text: "Print" },
-          { text: "Undo changes", to: "" },
-          { text: "Other contacts", to: "" }
-        ]
-      },
-      { icon: "mdi-message", text: "Send feedback", to: "" },
-      { icon: "mdi-help-circle", text: "Help", to: "" },
-      { icon: "mdi-cellphone-link", text: "App downloads", to: "" },
-      { icon: "mdi-keyboard", text: "Go to the old version", to: "" }
-    ]
-  })
+  data() {
+    return {
+      user: "",
+      dialog: false,
+      drawer: null,
+      loggedIn: true,
+      items: [
+        { icon: "mdi-home", text: "Dashboard", to: "/" },
+        { icon: "mdi-forum", text: "Blog Post", to: "/blog" },
+        { icon: "mdi-history", text: "Frequently contacted", to: "/" },
+        { icon: "mdi-content-copy", text: "Duplicates", to: "/" },
+        {
+          icon: "mdi-chevron-up",
+          "icon-alt": "mdi-chevron-down",
+          text: "Labels",
+          to: "",
+          model: true,
+          children: [{ icon: "mdi-plus", text: "Create label" }]
+        },
+        {
+          icon: "mdi-chevron-up",
+          "icon-alt": "mdi-chevron-down",
+          text: "More",
+          model: false,
+          children: [
+            { text: "Import", to: "" },
+            { text: "Export", to: "" },
+            { text: "Print", to: "" },
+            { text: "Undo changes", to: "" },
+            { text: "Other contacts", to: "" }
+          ]
+        },
+        {
+          icon: "mdi-settings",
+          "icon-alt": "mdi-settings",
+          text: "Settings",
+          children: [
+            { text: "Import", to: "" },
+            { text: "Export", to: "" },
+            { text: "Print" },
+            { text: "Undo changes", to: "" },
+            { text: "Other contacts", to: "" }
+          ]
+        },
+        { icon: "mdi-message", text: "Send feedback", to: "" },
+        { icon: "mdi-help-circle", text: "Help", to: "" },
+        { icon: "mdi-cellphone-link", text: "App downloads", to: "" },
+        { icon: "mdi-keyboard", text: "Go to the old version", to: "" }
+      ]
+    };
+  },
+  mounted() {
+    firebase.auth().onAuthStateChanged(user => {
+      if (user) {
+        firebase
+          .auth()
+          .currentUser.getIdToken(true)
+          .then(token => {
+            // //Cookies.set("access_token", token);
+            // console.log("Get Token Start");
+            // console.log(token);
+            // console.log("Get Token End");
+          });
+      } else {
+        this.loggedIn = false;
+      }
+    });
+    // firebase.auth().onAuthStateChanged(user => {
+    //   this.user = user;
+    //   console.log("user Start");
+    //   console.log(this.user);
+    //   console.log("User End");
+
+    //   if (!this.user) {
+    //     // this.$router.push("/admin/auth");
+    //   }
+    //   this.user = user;
+    // });
+  },
+
+  methods: {
+    signOut() {
+      this.$store.dispatch("logout");
+      this.$router.push("/admin/auth");
+      // firebase
+      //   .auth()
+      //   .signOut()
+      //   .then(result => {
+      //     this.user = "";
+      //     this.$router.push("/");
+      //   });
+    }
+  }
 };
 </script>
 <style>
 .contentArea {
   padding: 10px 20px;
   width: 100%;
+}
+.logout {
+  cursor: pointer;
 }
 </style>

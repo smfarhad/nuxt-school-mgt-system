@@ -2,14 +2,14 @@
   <div>
     <!-- <SinglePostPreview /> -->
 
-    <div class="all-title-box">
+    <!-- <div class="all-title-box">
       <div class="container text-center">
         <h1>
           Blog Single
           <span class="m_1">Lorem Ipsum dolroin gravida nibh vel velit.</span>
         </h1>
       </div>
-    </div>
+    </div>-->
 
     <div id="overviews" class="section wb">
       <div class="container">
@@ -17,7 +17,7 @@
           <div class="col-lg-9 blog-post-single">
             <div class="blog-item">
               <div class="image-blog">
-                <img src="/images/blog_single.jpg" alt class="img-fluid" />
+                <img :src="loadedPost.thumb" class="img-fluid" />
               </div>
               <div class="post-content">
                 <div class="post-date">
@@ -39,9 +39,7 @@
                   </span>
                 </div>
                 <div class="blog-title">
-                  <h2>
-                    <nuxt-link to="/blog/1" title>{{loadedPost.name}}</nuxt-link>
-                  </h2>
+                  <h2>{{loadedPost.name}}</h2>
                 </div>
                 <div class="blog-desc">{{loadedPost.description}}</div>
               </div>
@@ -310,25 +308,33 @@
 </template>
 <script>
 import SinglePostPreview from "@/components/blog/SinglePostPreview";
+
 export default {
   components: {
     SinglePostPreview
   },
-  asyncData(context, callback) {
-    setTimeout(() => {
-      callback(null, {
-        loadedPost: {
-          id: 1,
-          name: "First Post (ID: " + context.params.id + ")",
-          thumb: "/images/blog_1.jpg",
-          description: "First Post description"
-        }
-      });
-    }, 1500);
+  head: {
+    title: "Single Blog Psot"
+  },
+  asyncData(context) {
+    return context.app.$axios
+      .$get(process.env.baseUrl + "/blog-posts/" + context.params.id + ".json")
+      .then(data => {
+        return {
+          loadedPost: data
+        };
+      })
+      .catch(e => context.error(e));
   },
   data() {
     return {};
   },
+  computed: {
+    postLink() {
+      return "/blog/" + this.loadedPost.thumb;
+    }
+  },
+  computed: {},
   layout: "Frontend"
 };
 </script>

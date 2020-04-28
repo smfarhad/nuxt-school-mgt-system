@@ -7,7 +7,7 @@
       <div class="meta-info-blog">
         <span>
           <i class="fa fa-calendar"></i>
-          <a href="#">May 11, 2015</a>
+          <a href="#">{{post.created_at | date}}</a>
         </span>
         <span>
           <i class="fa fa-tag"></i>
@@ -20,16 +20,16 @@
       </div>
       <div class="blog-title">
         <h2>
-          <nuxt-link :to="postLink">{{ post.name }} {{ post.id }}</nuxt-link>
+          <NuxtLink :to="postLink">{{ post.name }}</NuxtLink>
         </h2>
       </div>
       <div class="blog-desc">
-        <p>{{ post.description }} {{ post.id }}</p>
+        <p>{{ post.description }}</p>
       </div>
       <div class="blog-button">
-        <nuxt-link class="hover-btn-new orange" :to="postLink">
+        <NuxtLink class="hover-btn-new orange" :to="postLink">
           <span>Read More</span>
-        </nuxt-link>
+        </NuxtLink>
       </div>
     </div>
   </div>

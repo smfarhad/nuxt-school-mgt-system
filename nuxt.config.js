@@ -4,7 +4,7 @@ export default {
    ** Headers of the page
    */
   head: {
-    title: process.env.npm_package_name || '',
+    title: process.env.npm_package_name || 'School Management System',
     meta: [{
         charset: 'utf-8'
       },
@@ -30,6 +30,10 @@ export default {
         rel: 'stylesheet',
         type: 'text/css',
         href: 'https://cdn.jsdelivr.net/npm/@mdi/font@4.x/css/materialdesignicons.min.css'
+      },
+      {
+        rel: "stylesheet",
+        href: "https://www.w3schools.com/w3css/4/w3.css"
       }
     ],
     script: [
@@ -50,12 +54,16 @@ export default {
     "~/assets/styles/versions.css",
     "~/assets/styles/responsive.css",
     "~/assets/styles/custom.css",
+
   ],
 
   /*
    ** Plugins to load before mounting the App
    */
-  plugins: [],
+  plugins: [
+    '~/plugins/date-filter.js',
+    "~/plugins/auth/firebase.js"
+  ],
   /*
    ** Nuxt.js dev-modules
    */
@@ -66,8 +74,13 @@ export default {
   modules: [
     'bootstrap-vue/nuxt',
     '@nuxtjs/vuetify',
+    '@nuxtjs/axios'
 
   ],
+  axios: {
+    baseURL: process.env.BASE_URL || "https://nuxtjs-schoolmgtsystem.firebaseio.com",
+    credentials: false
+  },
   /*
    ** Build configuration
    */
@@ -76,5 +89,16 @@ export default {
      ** You can extend webpack config here
      */
     extend(config, ctx) {}
+  },
+  dev: true,
+  env: {
+    baseUrl: process.env.BASE_URL || "https://nuxtjs-schoolmgtsystem.firebaseio.com"
+  },
+  router: {
+    //middleware: 'log'
+  },
+  transition: {
+    name: 'fade',
+    mode: 'out-in'
   }
-}
+};

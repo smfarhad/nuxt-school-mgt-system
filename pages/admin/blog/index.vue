@@ -1,7 +1,7 @@
 <template>
   <div>
     <h1>Blog Posts</h1>
-    <v-data-table :headers="headers" :items="loadedPosts" sort-by="calories" class="elevation-1">
+    <v-data-table :headers="headers" :items="loadedPosts" sort-by="name" class="elevation-1">
       <template v-slot:top>
         <v-toolbar flat color="white">
           <v-toolbar-title>All Posts Data</v-toolbar-title>
@@ -77,19 +77,23 @@ export default {
         { text: "Descripton", value: "description" },
         { text: "Actions", value: "actions", sortable: false }
       ],
-      desserts: [],
+
       editedIndex: -1,
       editedItem: {
         id: "",
         name: "",
         thumb: "",
-        description: ""
+        description: "",
+        created_at: "",
+        updated_at: ""
       },
       defaultItem: {
         id: "",
         name: "",
         thumb: "",
-        description: ""
+        description: "",
+        created_at: "",
+        updated_at: ""
       }
     };
   },
@@ -108,36 +112,16 @@ export default {
   },
 
   methods: {
-    initialize() {
-      this.desserts = [
-        {
-          id: 1,
-          name: "First Post",
-          thumb: "/images/blog_1.jpg",
-          description: "First Post description"
-        },
-        {
-          id: 2,
-          name: "Second Post",
-          thumb: `/images/blog_1.jpg`,
-          description: "Second Post description"
-        }
-      ];
-      return this.desserts;
-    },
-
     editItem(item) {
-      this.editedIndex = this.desserts.indexOf(item);
+      this.editedIndex = this.loadedPosts.indexOf(item);
       this.editedItem = Object.assign({}, item);
       this.dialog = true;
     },
-
     deleteItem(item) {
-      const index = this.desserts.indexOf(item);
+      const index = this.loadedPosts.indexOf(item);
       confirm("Are you sure you want to delete this item?") &&
-        this.desserts.splice(index, 1);
+        this.loadedPosts.splice(index, 1);
     },
-
     close() {
       this.dialog = false;
       setTimeout(() => {
@@ -145,24 +129,29 @@ export default {
         this.editedIndex = -1;
       }, 300);
     },
-
     save() {
       if (this.editedIndex > -1) {
-        //Object.assign(this.desserts[this.editedIndex], this.editedItem);
+        const postData = {
+          ...this.editedItem,
+          updated_at: new Date(),
+          id: this.loadedPosts[this.editedIndex].id
+        };
+        this.$store.dispatch("editPost", postData).then(() => {
+          this.$router.push("/admin");
+        });
       } else {
-        axios
-          .post(
-            "https://nuxtjs-schoolmgtsystem.firebaseio.com/blog-posts.json",
-            this.editedItem
-          )
-          .then(result => console.log(result))
-          .catch(e => console.log(e));
-        //this.desserts.push(this.editedItem);
+        const postData = {
+          ...this.editedItem
+        };
+        this.$store.dispatch("addPost", postData).then(() => {
+          this.$router.push("/admin/blog");
+        });
       }
       this.close();
     }
   },
-  layout: "Admin"
+  layout: "Admin",
+  middleware: ["check-auth", "auth"]
 };
 </script>
 <style scoped>

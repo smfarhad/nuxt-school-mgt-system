@@ -314,5 +314,11 @@
   </div>
 </template>
 <script>
-export default {};
+export default {
+  computed: {
+    postLink() {
+      return "/blog/" + this.postDetals.id;
+    }
+  }
+};
 </script>

@@ -52,6 +52,7 @@
 </template>
 
 <script>
+import { auth } from "firebase";
 export default {
   components: {},
   props: {
@@ -61,6 +62,12 @@ export default {
     dialog: false,
     drawer: null
   }),
-  layout: "Admin"
+  layout: "Admin",
+  middleware: ["check-auth", "auth"],
+  computed: {
+    loadedPosts() {
+      return this.$store.getters.loadedPosts;
+    }
+  }
 };
 </script>
